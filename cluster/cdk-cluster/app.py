@@ -9,16 +9,11 @@ from cdk.cdk_resource_stack import CdkResourceStack
 ############
 # Define bucket before deploy CDK
 bucket_para = [{
-    "src_bucket": "huangzb-s3-migration-test",
-    "src_prefix": "first-1",
-    "des_bucket": "s3-migration-test-nx",
-    "des_prefix": "s3-migration-cdk-from-us",
-    }, {
-    "src_bucket": "huangzb-tokyo-video",
-    "src_prefix": "small",
-    "des_bucket": "s3-migration-test-nx",
-    "des_prefix": "s3-migration-cdk-from-jp",
-    }]
+	"src_bucket": "hntv-us-east-bucket",
+	"src_prefix": "",
+	"des_bucket": "hntv-sync-files",
+	"des_prefix": ""
+}]
 
 # key_name = "id_rsa"  # Optional if use SSM-SessionManager
 
