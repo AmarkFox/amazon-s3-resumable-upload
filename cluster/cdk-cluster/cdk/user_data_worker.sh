@@ -9,7 +9,7 @@ pip3 install boto3
 
 echo "Download application amazon-s3-resumable-upload.git"
 cd /home/ec2-user/  || exit
-git clone -b master https://github.com/aws-samples/amazon-s3-resumable-upload.git
+git clone -b iad-hntv https://github.com/AmarkFox/amazon-s3-resumable-upload.git
 chown -R ec2-user:ec2-user amazon-s3-resumable-upload/
 
 # Install CW Agent
