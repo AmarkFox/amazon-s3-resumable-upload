@@ -28,10 +28,10 @@ class CdkResourceStack(core.Stack):
                                        )
         self.sqs_queue = sqs.Queue(self, "sqs_queue",
                                    queue_name=table_queue_name,
-                                   visibility_timeout=core.Duration.hours(1),
+                                   visibility_timeout=core.Duration..minutes(16),
                                    retention_period=core.Duration.days(14),
                                    dead_letter_queue=sqs.DeadLetterQueue(
-                                       max_receive_count=24,
+                                       max_receive_count=90,
                                        queue=self.sqs_queue_DLQ
                                    )
                                    )
