@@ -12,12 +12,12 @@ import aws_cdk.aws_sns as sns
 import aws_cdk.aws_sns_subscriptions as sub
 import aws_cdk.aws_logs as logs
 
-Des_bucket_default = 's3-migration-test-nx'
-Des_prefix_default = 's3-migration-cdk-from-us'
+Des_bucket_default = 'hntv-sync-files'
+Des_prefix_default = ''
 StorageClass = 'STANDARD'
 aws_access_key_id = 'xxxxxxxxx'
 aws_secret_access_key = 'xxxxxxxxxxxxxxx'
-aws_access_key_region = 'cn-northwest-1'
+aws_access_key_region = 'cn-north-1'
 
 # Setup your alarm email
 alarm_email = "alarm_your_email@email.com"
@@ -54,6 +54,7 @@ class CdkResourceStack(core.Stack):
                                runtime=lam.Runtime.PYTHON_3_8,
                                memory_size=1024,
                                timeout=core.Duration.minutes(15),
+                               tracing=lam.Tracing.ACTIVE,
                                environment={
                                    'table_queue_name': ddb_file_list.table_name,
                                    'Des_bucket_default': Des_bucket_default,
@@ -63,6 +64,7 @@ class CdkResourceStack(core.Stack):
                                    'aws_secret_access_key': aws_secret_access_key,
                                    'aws_access_key_region': aws_access_key_region
                                })
+
         ddb_file_list.grant_read_write_data(handler)
         handler.add_event_source(SqsEventSource(sqs_queue))
 
@@ -72,9 +74,9 @@ class CdkResourceStack(core.Stack):
                                         s3n.SqsDestination(sqs_queue))
 
         # You can import an existing bucket and grant access to lambda
-        # exist_s3bucket = s3.Bucket.from_bucket_name(self, "import_bucket",
-        #                                             bucket_name="you_bucket_name")
-        # exist_s3bucket.grant_read(handler)
+        exist_s3bucket = s3.Bucket.from_bucket_name(self, "import_bucket",
+                                                    bucket_name="hntv-us-east-bucket")
+        exist_s3bucket.grant_read(handler)
 
         # But You have to add sqs as imported bucket event notification manually, it doesn't support by CloudFormation
         # An work around is to add on_cloud_trail_event for the bucket, but will trigger could_trail first
@@ -190,7 +192,7 @@ class CdkResourceStack(core.Stack):
                           )
         # Alarm for queue - DLQ
         alarm_DLQ = cw.Alarm(self, "SQS_DLQ",
-                             alarm_name="SQS Dead Letter Queue",
+                             alarm_name="s3-migration-serverless-SQS Dead Letter Queue",
                              metric=sqs_queue_DLQ.metric_approximate_number_of_messages_visible(),
                              threshold=0,
                              comparison_operator=cw.ComparisonOperator.GREATER_THAN_THRESHOLD,
